@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, user-scalable=no, maximum-scale=1.0">
+  <link rel="stylesheet" href="./style.css">
+  <script defer src="./app.js"></script>
+  <title>To Do List</title>
+</head>
+<body>
+  <div class="wrapper grid--4">
+    <h1 class="mainHeader">Лучший to do list в мире</h1>
+    <div class="newItem">
+      <input type="text"> <button>Добавить</button>
+    </div>
+    <h2 class="subHeader">Сделать</h2>
+    <ul class="taskList taskList--todo">
+      <li class="taskItem clearfix">
+        <input type="checkbox" class="taskSwitch">
+        <label class="taskContent">Элемент списка</label>
+        <input type="text" class="taskInput">
+        <span class="taskItemControl layout--pushRight">
+          <button class="editBtn">Редактировать</button>
+          <button class="deleteBtn">Удалить</button>
+        </span>
+      </li>
+      <li class="taskItem clearfix">
+        <input type="checkbox" class="taskSwitch">
+        <label class="taskContent is-hidden">Элемент списка 1</label>
+        <input type="text" class="taskInput is-visible" value="Элемент списка 1">
+        <span class="taskItemControl layout--pushRight">
+          <button class="editBtn">Готово</button>
+          <button class="deleteBtn">Удалить</button>
+        </span>
+      </li>
+    </ul>
+    <h2 class="subHeader">Сделано</h2>
+    <ul class="taskList taskList--done">
+      <li class="taskItem clearfix">
+        <input type="checkbox" checked="true" class="taskSwitch">
+        <label class="taskContent checkboxTrue">Элемент списка 3</label>
+        <input type="text" class="taskInput">
+        <span class="taskItemControl layout--pushRight">
+          <button class="editBtn is-hidden">Редактировать</button>
+          <button class="deleteBtn">Удалить</button>
+        </span>
+      </li>
+    </ul>
+  </div>
+</body>
+</html>
