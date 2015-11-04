@@ -14,6 +14,7 @@ var addTask = function () {
   taskItem.classList.add("taskItem", "clearfix");
   taskItem.innerHTML = '<input type="checkbox" class="taskSwitch">';
   taskItem.innerHTML += '<label class="taskContent">' + taskInput.value + '</label>';
+  taskInput.value = "";
   taskItem.innerHTML += '<input type="text" class="taskInput">';
   taskList__todo.appendChild(taskItem);
 
