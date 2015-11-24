@@ -1,106 +1,101 @@
 "use strict";
 
-var taskInput = document.querySelector(".newItem").querySelector("input");
-var addBtn = document.querySelector(".newItem").querySelector("button");
-var taskList__todo = document.querySelector(".taskList--todo");
-var taskList__done = document.querySelector(".taskList--done");
-var tasks = document.getElementsByClassName("taskItem");
+var taskInput = $(".newItem input").eq(0);
+var addBtn = $(".newItem button").eq(0);
+var taskList__todo = $(".taskList--todo").eq(0);
+var taskList__done = $(".taskList--done").eq(0);
+var tasks = $(".taskItem");
 
 var addTask = function () {
   
-  if (!taskInput.value) return;
+  if (!taskInput.val()) return;
   
-  var taskItem = document.createElement("li");
-  taskItem.classList.add("taskItem", "clearfix");
-  taskItem.innerHTML = '<input type="checkbox" class="taskSwitch">';
-  taskItem.innerHTML += '<label class="taskContent">' + taskInput.value + '</label>';
-  taskInput.value = "";
-  taskItem.innerHTML += '<input type="text" class="taskInput">';
-  taskList__todo.appendChild(taskItem);
+  var $taskItem = $(
+    '<li class="taskItem clearfix">' +
+      '<input type="checkbox" class="taskSwitch">' +
+      '<label class="taskContent">' + taskInput.val() + '</label>' +
+      '<input type="text" class="taskInput">' +
+      '<span class="taskItemControl layout--pushRight">' +
+        '<button class="editBtn">Редактировать</button> ' +
+        '<button class="deleteBtn">Удалить</button>' +
+      '</span>' +
+    '</li>'
+  );
+  taskList__todo.append($taskItem);
 
-  var span = document.createElement("span");
-  span.classList.add("taskItemControl", "layout--pushRight");
-  span.innerHTML = '<button class="editBtn">Редактировать</button> ';
-  span.innerHTML += '<button class="deleteBtn">Удалить</button>';
-  taskItem.appendChild(span);
+  taskInput.val('');
 
-  bindTaskEvents.call(taskItem);
-}; addBtn.onclick = addTask;
+  bindTaskEvents.call($taskItem);
+}; addBtn.click(addTask);
 
 var moveTask = function () {
-  var taskItem = this.parentNode;
-  var taskList = taskItem.parentNode;
-  var _taskList__todo = taskList.classList.contains("taskList--todo");
-  var _taskList__done = taskList.classList.contains("taskList--done");  
+  var taskItem = $(this).parent();
+  var taskList = taskItem.parent();
+  var _taskList__todo = taskList.hasClass("taskList--todo");
+  var _taskList__done = taskList.hasClass("taskList--done");  
   
   if (_taskList__todo) {
-    taskItem.querySelector(".taskContent").classList.toggle("checkboxTrue");
-    taskItem.querySelector(".taskSwitch").checked = false;
-    taskList__done.appendChild(taskItem);
+    taskItem.find(".taskContent").toggleClass("checkboxTrue");
+    taskItem.find(".taskSwitch").prop("checked", false);
+    taskList__done.append(taskItem);
   } else if (_taskList__done) {
-    taskItem.querySelector(".taskContent").classList.toggle("checkboxTrue");
-    taskItem.querySelector(".taskSwitch").checked = true;
-    taskList__todo.appendChild(taskItem);
+    taskItem.find(".taskContent").toggleClass("checkboxTrue");
+    taskItem.find(".taskSwitch").prop("checked", true);
+    taskList__todo.append(taskItem);
   }
   
-  taskItem.querySelector(".editBtn").classList.toggle("is-hidden");
+  taskItem.find(".editBtn").toggleClass("is-hidden");
 };
 
 var deleteTask = function () {
-  var taskItem = this.parentNode.parentNode;
-  var taskList = taskItem.parentNode;
-  
-  taskList.removeChild(taskItem);
+  $(this).parent().parent().remove();
 };
 
 var editTask = function () {
   
-  var editBtn = this;
-  var taskItem = editBtn.parentNode.parentNode;
-  var taskInput = taskItem.querySelector(".taskInput");
-  var taskContent = taskItem.querySelector(".taskContent");
-  var taskInput_is = taskInput.classList.contains("is-visible");
+  var editBtn = $(this);
+  var taskItem = editBtn.parent().parent();
+  var taskInput = taskItem.find(".taskInput");
+  var taskContent = taskItem.find(".taskContent");
+  var taskInput_is = taskInput.hasClass("is-visible");
 
   if (taskInput_is) {
-    taskItem.querySelector(".taskSwitch").disabled = false;
-    editBtn.innerHTML = "Редактировать";
-    taskContent.innerHTML = taskInput.value;
+    taskItem.find(".taskSwitch").prop("disabled", false);
+    editBtn.html("Редактировать");
+    taskContent.html(taskInput.val());
   } else {
-      taskItem.querySelector(".taskSwitch").disabled = true;
-      editBtn.innerHTML = "Готово";
-      taskInput.value = taskContent.innerHTML;
+      taskItem.find(".taskSwitch").prop("disabled", true);
+      editBtn.html("Готово");
+      taskInput.val(taskContent.html());
   }
 
-  taskInput.classList.toggle("is-visible");
-  taskContent.classList.toggle("is-hidden");
+  taskInput.toggleClass("is-visible");
+  taskContent.toggleClass("is-hidden");
   taskInput.focus();
-  taskInput.addEventListener("input", disableEditBtn);
+  taskInput.on("input", disableEditBtn);
 };
 
 var disableEditBtn = function () {
+  var listItem = $(this).parent();
+  var editBtn = listItem.find(".editBtn");
   
-  var listItem = this.parentNode;
-  var editBtn = listItem.querySelector(".editBtn");
-  if (!this.value) {
-    editBtn.disabled = true;;
-  } else {
-    editBtn.disabled = false;
-  }
+  if (!$(this).val()) editBtn.prop("disabled", true);
+  else editBtn.prop("disabled", false);
 }
 
 var setPointer = function () {
-  var temp = this.value;
-  this.value = '';
-  this.value = temp;
+  var temp = $(this).val();
+  $(this).val('');
+  $(this).val(temp);
 };
 
 var bindTaskEvents = function () {
-  this.querySelector(".taskContent").onclick = moveTask;
-  this.querySelector(".deleteBtn").onclick = deleteTask;
-  this.querySelector(".editBtn").onclick = editTask;
-  this.querySelector(".taskInput").onfocus = setPointer;
+  this.find(".taskContent").click(moveTask);
+  this.find(".deleteBtn").click(deleteTask);
+  this.find(".editBtn").click(editTask);
+  this.find(".taskInput").focus(setPointer);
 };
 
 for (var i = 0; i < tasks.length; i++) {
-  bindTaskEvents.call(tasks[i]);
+  bindTaskEvents.call(tasks.eq(i));
 }
