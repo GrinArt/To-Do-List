@@ -4,12 +4,11 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, user-scalable=no, maximum-scale=1.0">
   
-  <link rel="stylesheet" href="./css/jquery.mobile-1.4.5.min.css">
-  <link rel="stylesheet" href="./style.css">
+  <link rel="stylesheet" href="./css/style.css">
   
   <script defer src="//code.jquery.com/jquery-1.11.3.min.js"></script>
-  <script defer src="./js/jquery.mobile-1.4.5.min.js"></script>
-  <script defer src="./app.js"></script>
+  <script defer src="./js/jquery-ui.min.js"></script>
+  <script defer src="./js/app.js"></script>
   
   <title>To Do List</title>
 </head>
@@ -21,6 +20,13 @@
     </div>
     <h2 class="subHeader">Сделать</h2>
     <ul class="taskList taskList--todo">
+     
+    <div class="checkbox">
+      <label>
+        <input class="input-lg" type="checkbox" id="blankCheckbox" value="option1" aria-label="...">
+      </label>
+    </div>
+     
       <li class="taskItem clearfix">
         <input type="checkbox" class="taskSwitch">
         <label class="taskContent">Элемент списка 1</label>
