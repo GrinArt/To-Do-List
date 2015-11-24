@@ -1,6 +1,5 @@
-* {
-  box-sizing: border-box;
-}
+* { box-sizing: border-box; }
+
 body, html {
   min-height: 100%;
   margin: 0;
@@ -24,7 +23,6 @@ li { list-style: none; }
 }
 input[type="text"] {
   padding: 4px 6px;
-  /background: rgba(255, 255, 255, 0.5);
   font-size: 1rem;
 }
 button { font-size: .9rem; }
