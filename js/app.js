@@ -10,7 +10,6 @@ var nId = 0;
 var tdMask = 'td_';
 var lsMas = [];
 
-
 var createTask = function(val, id) {
   var taskItem = $(
     '<li class="taskItem clearfix" data-itemid="' + id + '">' +
@@ -54,9 +53,16 @@ var addTask = function (source, status, val, id) {
   taskInput.val('');
 
   bindTaskEvents.call(taskItem);
-}; addBtn.on('click', function () {
-  addTask();
+  
   nId++;
+}; 
+addBtn.on('click', function () {
+  addTask();
+});
+taskInput.on('keydown', function (e) {
+  if (e.which === 13) {
+    addTask();
+  }
 });
 
 var moveTask = function () {
@@ -74,7 +80,7 @@ var moveTask = function () {
     
     localStorage.setItem(
       taskItem.attr("data-itemid"),
-      '{"value":"'+value+'","isDo":"true"}'
+      '{"value":"' + value + '","isDo":"true"}'
     );
   } else if (_taskList__done) {
     taskItem.find(".taskContent").toggleClass("checkboxTrue");
@@ -83,7 +89,7 @@ var moveTask = function () {
     
     localStorage.setItem(
       taskItem.attr("data-itemid"),
-      '{"value":"'+value+'","isDo":"false"}'
+      '{"value":"' + value + '","isDo":"false"}'
     );
   }
   
@@ -91,6 +97,7 @@ var moveTask = function () {
 };
 
 var deleteTask = function () {
+  localStorage.removeItem($(this).parent().parent().attr('data-itemid'));
   $(this).parent().parent().remove();
 };
 
@@ -115,6 +122,17 @@ var editTask = function () {
   taskInput.toggleClass("is-visible");
   taskContent.toggleClass("is-hidden");
   taskInput.focus();
+  
+  var taskId = taskItem.attr('data-itemid');
+  
+  localStorage.setItem(
+    taskId,
+    '{"value":"' +
+    taskInput.val() +
+    '", "isDo":"' +
+    JSON.parse(localStorage[taskId]).isDo +
+    '"}'
+  );
 };
 
 var disableEditBtn = function () {
@@ -123,7 +141,6 @@ var disableEditBtn = function () {
   
   if (!$(this).val()) editBtn.prop("disabled", true);
   else editBtn.prop("disabled", false);
-  console.log('is it also here?');
 };
 
 var setPointer = function () {
@@ -135,12 +152,11 @@ var setPointer = function () {
  var clicky;
 
 $(document).mousedown(function(e) {
-    clicky = $(e.target);
+  clicky = $(e.target);
 });
 
 var blurInput = function(e) {
   if (!clicky.eq(0).hasClass('editBtn')) {
-    console.log("q");
     $(this).removeClass("is-visible");
     $(this).addClass("is-hidden");
     $(this).parent().find('.taskContent').removeClass("is-hidden");
@@ -156,7 +172,6 @@ var bindTaskEvents = function () {
   this.find(".taskInput").focus(setPointer);
   this.find(".taskInput").on("input", disableEditBtn);
   this.find(".taskInput").on("blur", blurInput);
-
 };
 
 for (var i = 0; i < tasks.length; i++) {
@@ -166,32 +181,30 @@ for (var i = 0; i < tasks.length; i++) {
 $(".taskList--todo, .taskList--done").sortable({
   cancel: "li:has(label.is-hidden)",
   connectWith: ".taskList",
-  change: function(event,ui) {
-      if (ui.sender) {
-        moveTask.call(ui.item[0].querySelector('input[type=checkbox]'));
-      }
+  change: function(event, ui) {
+    if (ui.sender) {
+      moveTask.call(ui.item.find('.taskSwitch'));
+    }
   }
 }).disableSelection();
 
 function showTask() {
-  var localLength = [];
+  var ls = [];
   
   for(var key in localStorage) {
-    console.log(key);
-    if (key.slice(0,3) === tdMask){
-      localLength.push(key);
+    if (key.slice(0, 3) === tdMask) {
+      ls.push(key);
     }
   }
-  nId = localLength.length;
+  nId = ls.length;
 
-  localLength.sort(function(a,b){
-    return a.slice(3)-b.slice(3);
+  ls.sort(function(a, b) {
+    return a.slice(3) - b.slice(3);
   });
 
+  for (var i = 0; i < ls.length; i++) {
 
-  for (var i = 0; i < localLength.length; i++) {
-
-    var key = localLength[i];
+    var key = ls[i];
     var val = JSON.parse(localStorage[key]);
 
     addTask('storage', val.isDo, val.value, key);
