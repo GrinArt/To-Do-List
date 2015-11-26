@@ -1,14 +1,14 @@
 "use strict";
-
++function($) {
 var taskInput = $(".newItem input").eq(0);
 var addBtn = $(".newItem button").eq(0);
 var taskList__todo = $(".taskList--todo").eq(0);
 var taskList__done = $(".taskList--done").eq(0);
 var tasks = $(".taskItem");
-
 var nId = 0;
 var tdMask = 'td_';
 var lsMas = [];
+var clicky;
 
 var createTask = function(val, id) {
   var taskItem = $(
@@ -94,15 +94,15 @@ var moveTask = function () {
   }
   
   taskItem.find(".editBtn").toggleClass("is-hidden");
-};
+};                // Перенос записи из "запланированных" к "выполненным" задачам. Изменяет состояние чекбокса (в зависимости от того, из какого списка задач происходит перенос). Используется в addTask (для вывода данных из localStorage в нужный список). 
 
 var deleteTask = function () {
   localStorage.removeItem($(this).parent().parent().attr('data-itemid'));
   $(this).parent().parent().remove();
-};
+};              // Удаление записи. Используется в bindTaskEvents.
 
 var editTask = function () {
-  
+
   var editBtn = $(this);
   var taskItem = editBtn.parent().parent();
   var taskInput = taskItem.find(".taskInput");
@@ -133,7 +133,7 @@ var editTask = function () {
     JSON.parse(localStorage[taskId]).isDo +
     '"}'
   );
-};
+};                // Редактирование записи. Используется в bindTaskEvents.
 
 var disableEditBtn = function () {
   var listItem = $(this).parent();
@@ -141,15 +141,13 @@ var disableEditBtn = function () {
   
   if (!$(this).val()) editBtn.prop("disabled", true);
   else editBtn.prop("disabled", false);
-};
+};          // Disable кнопку редактирования("готово") если поле редактирования записи пустое. Используется в bindTaskEvents.
 
-var setPointer = function () {
+var setPointer = function () {            
   var temp = $(this).val();
   $(this).val('');
   $(this).val(temp);
-};
-
- var clicky;
+};              // Устанавливает указатель в конец строки поля редактирования записи. Используется в bindTaskEvents.
 
 $(document).mousedown(function(e) {
   clicky = $(e.target);
@@ -172,6 +170,12 @@ var bindTaskEvents = function () {
   this.find(".taskInput").focus(setPointer);
   this.find(".taskInput").on("input", disableEditBtn);
   this.find(".taskInput").on("blur", blurInput);
+  this.find(".taskInput").on('keydown',
+    function (e) {
+      if (e.which === 13) 
+        editTask.call($(this).parent().find('.editBtn'));
+    }
+  );
 };
 
 for (var i = 0; i < tasks.length; i++) {
@@ -188,7 +192,7 @@ $(".taskList--todo, .taskList--done").sortable({
   }
 }).disableSelection();
 
-function showTask() {
+(function showTask() {
   var ls = [];
   
   for(var key in localStorage) {
@@ -209,6 +213,6 @@ function showTask() {
 
     addTask('storage', val.isDo, val.value, key);
   }
-}
+}());
 
-showTask();
+}(jQuery);
